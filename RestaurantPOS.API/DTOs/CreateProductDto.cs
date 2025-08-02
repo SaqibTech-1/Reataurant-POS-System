@@ -2,7 +2,7 @@
 {
     public class CreateProductDto
     {
-        public Guid? GlobalId { get; set; }
+        public Guid? GlobalId { get; set; } = Guid.Empty;
         public string? Name { get; set; }
         public decimal Price { get; set; }
         public int CategoryId { get; set; }

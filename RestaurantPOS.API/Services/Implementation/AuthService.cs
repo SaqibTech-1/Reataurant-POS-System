@@ -8,40 +8,37 @@ namespace RestaurantPOS.API.Services.Implementation
 {
     public class AuthService : IAuthService
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IConfiguration _configuration;
-        private readonly IUserService _userService;
+        private readonly IUnitOfWork _uow;
+        private readonly IConfiguration _config;
 
-        public AuthService(IUnitOfWork unitOfWork, IConfiguration configuration, IUserService userService)
+        public AuthService(IUnitOfWork uow, IConfiguration config)
         {
-            _unitOfWork = unitOfWork;
-            _configuration = configuration;
-            _userService = userService;
+            _uow = uow;
+            _config = config;
         }
 
         public async Task<AuthResponseDto> LoginAsync(AuthRequestDto dto)
         {
-            var user = (await _unitOfWork.Users.GetAllAsync()).FirstOrDefault(u => u.UserName == dto.UserName);
+            var user = (await _uow.Users.GetAllAsync()).FirstOrDefault(u => u.UserName == dto.UserName);
             if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
-            {
-                throw new Exception("Invalid Credentials.");
-            }
+                throw new UnauthorizedAccessException("Invalid credentials");
 
-            var role = await _unitOfWork.Roles.GetByIdAsync(user.RoleId);
-            var token = JwtHelper.GenerateToken(user, _configuration["Jwt:Key"], _configuration["Jwt:Issuer"]);
+            var role = (await _uow.Roles.GetByIdAsync(user.RoleId))?.Name ?? "User";
+
+            var token = JwtHelper.GenerateToken(user, _config["Jwt:Key"], _config["Jwt:Issuer"]);
 
             return new AuthResponseDto
             {
                 Token = token,
                 UserName = user.UserName,
-                Role = role?.Name ?? "User",
-                ExpiresAt = DateTime.UtcNow.AddHours(2),
+                Role = role,
+                ExpiresAt = DateTime.UtcNow.AddHours(2)
             };
         }
 
         public async Task<UserDto> RegisterAsync(CreateUserDto dto)
         {
-            return await _userService.CreateOrUpdateAsync(dto);
+            return await new UserService(_uow).CreateOrUpdateAsync(dto);
         }
 
 

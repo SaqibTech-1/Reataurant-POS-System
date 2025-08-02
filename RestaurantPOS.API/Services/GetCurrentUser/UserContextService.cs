@@ -10,13 +10,7 @@ namespace RestaurantPOS.API.Services.GetCurrentUser
             _httpContextAccessor = httpContextAccessor;
         }
 
-        //public int? GetUserId()
-        //{
-        //    var user = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
-        //    return int.TryParse(user,out var id) ? id : 0;
-        //}
-
-        public int? GetUserId
+        public int? UserId
         {
             get
             {
@@ -25,6 +19,5 @@ namespace RestaurantPOS.API.Services.GetCurrentUser
             }
         }
 
-       
     }
 }

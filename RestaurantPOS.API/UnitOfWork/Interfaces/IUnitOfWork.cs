@@ -6,7 +6,7 @@ namespace RestaurantPOS.API.UnitOfWork.Interfaces
     public interface IUnitOfWork : IDisposable
     {
         IGenericRepository<Category> Categories { get; }
-        IGenericRepository<Product> MenuItems { get; }
+        IGenericRepository<Product> Products { get; }
         IGenericRepository<User> Users { get; }
         IGenericRepository<Role> Roles { get; }
         IGenericRepository<Table> Tables { get; }

@@ -17,13 +17,13 @@ namespace RestaurantPOS.API.Repositories.Implementation
         }
 
         public async Task<IEnumerable<T>> GetAllAsync() =>
-            await _dbSet.Where(e => !e.IsDelete).ToListAsync();
+            await _dbSet.Where(e => !e.IsDeleted).ToListAsync();
 
         public async Task<T> GetByIdAsync(int id) =>
-            await _dbSet.FirstOrDefaultAsync(e => e.Id == id && !e.IsDelete);
+            await _dbSet.FirstOrDefaultAsync(e => e.Id == id && !e.IsDeleted);
 
         public async Task<T> GetByGlobalIdAsync(Guid globalId) =>
-            await _dbSet.FirstOrDefaultAsync(e => e.GlobalId == globalId && !e.IsDelete);
+            await _dbSet.FirstOrDefaultAsync(e => e.GlobalId == globalId && !e.IsDeleted);
 
         public async Task AddAsync(T entity) =>
             await _dbSet.AddAsync(entity);
@@ -33,7 +33,7 @@ namespace RestaurantPOS.API.Repositories.Implementation
 
         public void Delete(T entity)
         {
-            entity.IsDelete = true;
+            entity.IsDeleted = true;
             entity.IsActive = false;
             _dbSet.Update(entity);
         }

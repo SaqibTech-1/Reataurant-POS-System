@@ -2,6 +2,6 @@
 {
     public interface IUserContextService
     {
-        int? GetUserId { get; }
+        int? UserId { get; }
     }
 }

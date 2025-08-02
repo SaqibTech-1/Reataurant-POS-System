@@ -12,8 +12,8 @@ using RestaurantPOS.API.Data;
 namespace RestaurantPOS.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250731212336_EditMenuItemToProduct")]
-    partial class EditMenuItemToProduct
+    [Migration("20250802230526_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,7 +45,7 @@ namespace RestaurantPOS.API.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsDelete")
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<int?>("ModifiedBy")
@@ -82,7 +82,7 @@ namespace RestaurantPOS.API.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsDelete")
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<int?>("ModifiedBy")
@@ -91,7 +91,7 @@ namespace RestaurantPOS.API.Migrations
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("OrderTime")
+                    b.Property<DateTime>("OrderTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Status")
@@ -136,11 +136,8 @@ namespace RestaurantPOS.API.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsDelete")
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
-
-                    b.Property<int>("MenuItemId")
-                        .HasColumnType("int");
 
                     b.Property<int?>("ModifiedBy")
                         .HasColumnType("int");
@@ -149,6 +146,9 @@ namespace RestaurantPOS.API.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
@@ -160,9 +160,9 @@ namespace RestaurantPOS.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MenuItemId");
-
                     b.HasIndex("OrderId");
+
+                    b.HasIndex("ProductId");
 
                     b.ToTable("OrderItems");
                 });
@@ -193,7 +193,7 @@ namespace RestaurantPOS.API.Migrations
                     b.Property<bool>("IsAvailable")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsDelete")
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<int?>("ModifiedBy")
@@ -236,7 +236,7 @@ namespace RestaurantPOS.API.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsDelete")
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<int?>("ModifiedBy")
@@ -273,7 +273,7 @@ namespace RestaurantPOS.API.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsDelete")
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsOccupied")
@@ -301,9 +301,6 @@ namespace RestaurantPOS.API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("CreatedBy")
                         .HasColumnType("int");
 
@@ -316,7 +313,7 @@ namespace RestaurantPOS.API.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsDelete")
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<int?>("ModifiedBy")
@@ -365,27 +362,27 @@ namespace RestaurantPOS.API.Migrations
 
             modelBuilder.Entity("RestaurantPOS.API.Entities.OrderItem", b =>
                 {
-                    b.HasOne("RestaurantPOS.API.Entities.Product", "MenuItem")
-                        .WithMany()
-                        .HasForeignKey("MenuItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("RestaurantPOS.API.Entities.Order", "Order")
                         .WithMany("Items")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("MenuItem");
+                    b.HasOne("RestaurantPOS.API.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Order");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("RestaurantPOS.API.Entities.Product", b =>
                 {
                     b.HasOne("RestaurantPOS.API.Entities.Category", "Category")
-                        .WithMany("MenuItems")
+                        .WithMany("Products")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -406,7 +403,7 @@ namespace RestaurantPOS.API.Migrations
 
             modelBuilder.Entity("RestaurantPOS.API.Entities.Category", b =>
                 {
-                    b.Navigation("MenuItems");
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("RestaurantPOS.API.Entities.Order", b =>

@@ -1,77 +1,107 @@
-﻿using AutoMapper;
-using RestaurantPOS.API.DTOs;
+﻿using RestaurantPOS.API.DTOs;
 using RestaurantPOS.API.Entities;
 using RestaurantPOS.API.Services.GetCurrentUser;
 using RestaurantPOS.API.Services.Interfaces;
 using RestaurantPOS.API.UnitOfWork.Interfaces;
 
-public class TableService : ITableService
+namespace RestaurantPOS.API.Services.Implementation
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IUserContextService _userContext;
-    private readonly IMapper _mapper;
-
-    public TableService(IUnitOfWork unitOfWork, IUserContextService userContext, IMapper mapper)
+    public class TableService : ITableService
     {
-        _unitOfWork = unitOfWork;
-        _userContext = userContext;
-        _mapper = mapper;
-    }
+        private readonly IUnitOfWork _uow;
 
-    public async Task<IEnumerable<TableDto>> GetAllAsync()
-    {
-        var tables = await _unitOfWork.Tables.GetAllAsync();
-        return _mapper.Map<IEnumerable<TableDto>>(tables);
-    }
-
-    public async Task<TableDto> GetByIdAsync(int id)
-    {
-        var table = await _unitOfWork.Tables.GetByIdAsync(id);
-        return _mapper.Map<TableDto>(table);
-    }
-
-    public async Task<TableDto> GetByGlobalIdAsync(Guid globalId)
-    {
-        var table = await _unitOfWork.Tables.GetByGlobalIdAsync(globalId);
-        return _mapper.Map<TableDto>(table);
-    }
-
-    public async Task<TableDto> CreateOrUpdateAsync(CreateTableDto dto)
-    {
-        if (!dto.GlobalId.HasValue)
+        public TableService(IUnitOfWork uow)
         {
-            var table = _mapper.Map<Table>(dto);
-            table.CreatedBy = _userContext.GetUserId ?? 0;
-            table.CreatedOn = DateTime.UtcNow;
-
-            await _unitOfWork.Tables.AddAsync(table);
-            await _unitOfWork.SaveChangesAsync();
-
-            return _mapper.Map<TableDto>(table);
+            _uow = uow;
         }
-        else
+
+        public async Task<IEnumerable<TableDto>> GetAllAsync()
         {
-            var table = await _unitOfWork.Tables.GetByGlobalIdAsync(dto.GlobalId.Value);
-            if (table == null) return null;
-
-            table.TableNumber = dto.TableNumber;
-            table.IsOccupied = dto.IsOccupied;
-            table.ModifiedBy = _userContext.GetUserId ?? 0;
-            table.ModifiedOn = DateTime.UtcNow;
-
-            await _unitOfWork.SaveChangesAsync();
-            return _mapper.Map<TableDto>(table);
+            var tables = await _uow.Tables.GetAllAsync();
+            return tables.Select(t => new TableDto
+            {
+                Id = t.Id,
+                GlobalId = t.GlobalId,
+                TableNumber = t.TableNumber,
+                IsOccupied = t.IsOccupied
+            });
         }
-    }
 
-    public async Task DeleteAsync(int id)
-    {
-        var table = await _unitOfWork.Tables.GetByIdAsync(id);
-        if (table != null)
+        public async Task<TableDto> GetByIdAsync(int id)
         {
-            _unitOfWork.Tables.Delete(table);
-            await _unitOfWork.SaveChangesAsync();
+            var t = await _uow.Tables.GetByIdAsync(id);
+            return t == null ? null : new TableDto
+            {
+                Id = t.Id,
+                GlobalId = t.GlobalId,
+                TableNumber = t.TableNumber,
+                IsOccupied = t.IsOccupied
+            };
         }
+
+        public async Task<TableDto> GetByGlobalIdAsync(Guid globalId)
+        {
+            var t = await _uow.Tables.GetByGlobalIdAsync(globalId);
+            return t == null ? null : new TableDto
+            {
+                Id = t.Id,
+                GlobalId = t.GlobalId,
+                TableNumber = t.TableNumber,
+                IsOccupied = t.IsOccupied
+            };
+        }
+
+        public async Task<TableDto> CreateOrUpdateAsync(CreateTableDto dto)
+        {
+            if (!dto.GlobalId.HasValue)
+            {
+                var table = new Table
+                {
+                    TableNumber = dto.TableNumber,
+                    IsOccupied = dto.IsOccupied
+                };
+                await _uow.Tables.AddAsync(table);
+                await _uow.SaveChangesAsync();
+
+                return new TableDto
+                {
+                    Id = table.Id,
+                    GlobalId = table.GlobalId,
+                    TableNumber = table.TableNumber,
+                    IsOccupied = table.IsOccupied
+                };
+            }
+            else
+            {
+                var table = await _uow.Tables.GetByGlobalIdAsync(dto.GlobalId.Value);
+                if (table == null) throw new Exception("Table not found");
+
+                table.TableNumber = dto.TableNumber;
+                table.IsOccupied = dto.IsOccupied;
+
+                _uow.Tables.Update(table);
+                await _uow.SaveChangesAsync();
+
+                return new TableDto
+                {
+                    Id = table.Id,
+                    GlobalId = table.GlobalId,
+                    TableNumber = table.TableNumber,
+                    IsOccupied = table.IsOccupied
+                };
+            }
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            var t = await _uow.Tables.GetByIdAsync(id);
+            if (t != null)
+            {
+                _uow.Tables.Delete(t);
+                await _uow.SaveChangesAsync();
+            }
+        }
+
+
     }
 }
-

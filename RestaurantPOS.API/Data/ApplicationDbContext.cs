@@ -23,17 +23,17 @@ namespace RestaurantPOS.API.Data
             foreach (var entry in entries)
             {
                 var now = DateTime.UtcNow;
-                var userId = _userContextService.GetUserId;
+                var userId = _userContextService.UserId;
 
                 if (entry.State == EntityState.Added)
                 {
                     entry.Entity.CreatedOn = now;
-                    entry.Entity.CreatedBy = userId ?? 0;
+                    entry.Entity.CreatedBy = _userContextService.UserId ?? 0;
                 }
                 else if (entry.State == EntityState.Modified)
                 {
                     entry.Entity.ModifiedOn = now;
-                    entry.Entity.ModifiedBy = userId;
+                    entry.Entity.ModifiedBy = _userContextService.UserId ?? 0;
                 }
             }
 

@@ -19,9 +19,9 @@ namespace RestaurantPOS.API.UnitOfWork.Implementation
         public IGenericRepository<Category> Categories =>
             _categories ??= new GenericRepository<Category>(_context);
 
-        private IGenericRepository<Product> _menuItems;
-        public IGenericRepository<Product> MenuItems =>
-            _menuItems ??= new GenericRepository<Product>(_context);
+        private IGenericRepository<Product> _products;
+        public IGenericRepository<Product> Products =>
+            _products ??= new GenericRepository<Product>(_context);
 
         private IGenericRepository<User> _users;
         public IGenericRepository<User> Users =>
@@ -42,7 +42,6 @@ namespace RestaurantPOS.API.UnitOfWork.Implementation
         private IGenericRepository<OrderItem> _orderItems;
         public IGenericRepository<OrderItem> OrderItems =>
             _orderItems ??= new GenericRepository<OrderItem>(_context);
-
         public async Task<int> SaveChangesAsync() =>
             await _context.SaveChangesAsync();
 
