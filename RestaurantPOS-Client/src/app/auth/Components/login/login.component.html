@@ -1,0 +1,70 @@
+<div class="container-fluid vh-100 d-flex align-items-center justify-content-center bg-light">
+  <div class="row w-100 g-0">
+    <div class="col-10 col-md-8 col-lg-7 mx-auto">
+      <div class="card shadow overflow-hidden w-100">
+        <div class="row g-0">
+          <!-- form -->
+          <div class="col-md-6 p-5 d-flex flex-column justify-content-center bg-white">
+            <div class="text-center mb-4">
+              <img src="../../../../assets/logo.png" alt="MixBowls Logo" height="70" class="mb-2" />&nbsp;
+              <span class="h5 fw-bold">Restaurant POS</span>
+            </div>
+
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
+              <div class="mb-3 form-floating">
+                <input id="userName" type="text" formControlName="userName" class="form-control rounded-4"
+                  placeholder="Username" [ngClass]="{
+                 'is-invalid': (submitted || f['userName'].touched) && f['userName'].invalid
+                }" />
+                <label for="userName">Username</label>
+
+                <div *ngIf="(submitted || f['userName'].touched) && f['userName'].errors" class="invalid-feedback ps-2">
+                  <div *ngIf="f['userName'].errors['required']">
+                    Username is required.
+                  </div>
+                  <div *ngIf="f['userName'].errors['minlength']">
+                    At least 3 characters.
+                  </div>
+                </div>
+              </div>
+
+              <div class="mb-3 form-floating">
+                <input type="password" id="password" formControlName="password" class="form-control rounded-4"
+                  placeholder="Password" [ngClass]="{
+                 'is-invalid': (submitted || f['password'].touched) && f['password'].invalid
+                }" />
+                <label for="password">Password</label>
+                <div *ngIf="(submitted || f['password'].touched) && f['password'].errors" class="invalid-feedback ps-2">
+                  <div *ngIf="f['password'].errors['required']">
+                    Password is required.
+                  </div>
+                  <div *ngIf="f['password'].errors['minlength']">
+                    At least 6 characters.
+                  </div>
+                </div>
+              </div>
+
+              <!-- <div *ngIf="loginError" class="alert alert-danger small text-center py-2">
+                {{ loginError }}
+              </div> -->
+
+              <!-- <button type="submit" class="btn btn-dark w-100 rounded-pill mt-3 shadow-sm">
+                Login
+              </button> -->
+              <button type="submit" [disabled]="loading" class="btn btn-dark w-100 rounded-pill mt-3 shadow-sm">
+                <span *ngIf="!loading">Login</span>
+                <span *ngIf="loading" class="spinner-border spinner-border-sm"></span>
+              </button>
+            </form>
+          </div>
+
+          <!-- side iamge -->
+          <div class="col-md-6 d-none d-md-block">
+            <img src="../../../../assets/login/login side image.webp" alt="Delicious dish"
+              class="img-fluid h-100 w-100 object-fit-cover" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

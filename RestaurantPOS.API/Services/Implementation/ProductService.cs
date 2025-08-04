@@ -9,10 +9,12 @@ namespace RestaurantPOS.API.Services.Implementation
     public class ProductService : IProductService
     {
         private readonly IUnitOfWork _uow;
+        private readonly IWebHostEnvironment _env;
 
-        public ProductService(IUnitOfWork uow)
+        public ProductService(IUnitOfWork uow, IWebHostEnvironment env)
         {
             _uow = uow;
+            _env = env;
         }
 
         public async Task<IEnumerable<ProductDto>> GetAllAsync()
@@ -59,15 +61,35 @@ namespace RestaurantPOS.API.Services.Implementation
 
         public async Task<ProductDto> CreateOrUpdateAsync(CreateProductDto dto)
         {
-            if (!dto.GlobalId.HasValue)
+            string? imagePath = null;
+
+            if (dto.Image != null)
+            {
+                var fileName = $"{Guid.NewGuid()}{Path.GetExtension(dto.Image.FileName)}";
+                var savePath = Path.Combine(_env.WebRootPath, "images", fileName);
+
+                Directory.CreateDirectory(Path.GetDirectoryName(savePath)!); // Ensure directory exists
+
+                using (var stream = new FileStream(savePath, FileMode.Create))
+                {
+                    await dto.Image.CopyToAsync(stream);
+                }
+
+                imagePath = $"/images/{fileName}";
+            }
+
+            if (!dto.GlobalId.HasValue || dto.GlobalId == Guid.Empty)
             {
                 var item = new Product
                 {
                     Name = dto.Name,
                     Price = dto.Price,
                     CategoryId = dto.CategoryId,
-                    IsAvailable = dto.IsAvailable
+                    IsAvailable = dto.IsAvailable,
+                    FoodType = dto.FoodType,
+                    ImageUrl = imagePath
                 };
+
                 await _uow.Products.AddAsync(item);
                 await _uow.SaveChangesAsync();
 
@@ -78,19 +100,24 @@ namespace RestaurantPOS.API.Services.Implementation
                     Name = item.Name,
                     Price = item.Price,
                     CategoryId = item.CategoryId,
-                    IsAvailable = item.IsAvailable
+                    IsAvailable = item.IsAvailable,
+                    FoodType = item.FoodType,
+                    ImageUrl = item.ImageUrl
                 };
             }
             else
             {
                 var item = await _uow.Products.GetByGlobalIdAsync(dto.GlobalId.Value);
                 if (item == null)
-                    throw new Exception("MenuItem not found");
+                    throw new Exception("Product not found");
 
                 item.Name = dto.Name;
                 item.Price = dto.Price;
                 item.CategoryId = dto.CategoryId;
                 item.IsAvailable = dto.IsAvailable;
+                item.FoodType = dto.FoodType;
+                if (imagePath != null)
+                    item.ImageUrl = imagePath;
 
                 _uow.Products.Update(item);
                 await _uow.SaveChangesAsync();
@@ -102,10 +129,13 @@ namespace RestaurantPOS.API.Services.Implementation
                     Name = item.Name,
                     Price = item.Price,
                     CategoryId = item.CategoryId,
-                    IsAvailable = item.IsAvailable
+                    IsAvailable = item.IsAvailable,
+                    FoodType = item.FoodType,
+                    ImageUrl = item.ImageUrl
                 };
             }
         }
+
 
         public async Task DeleteAsync(int id)
         {

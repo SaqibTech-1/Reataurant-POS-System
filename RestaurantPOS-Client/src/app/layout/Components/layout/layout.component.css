@@ -1,0 +1,11 @@
+.main-container {
+  display: flex;
+}
+
+.content-area {
+  flex: 1;
+  padding: 20px;
+  background-color: #f8f9fa;
+  height: calc(100vh - 60px); /* account for navbar */
+  overflow-y: auto;
+}

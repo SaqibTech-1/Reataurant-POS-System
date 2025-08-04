@@ -1,0 +1,38 @@
+<nav class="navbar navbar-expand-lg px-3 shadow-sm">
+  <!-- Left Logo -->
+  <a class="navbar-brand d-flex align-items-center" routerLink="/dashboard">
+    <img src="../../../../assets/logo.png" alt="logo" height="50" />
+  </a>
+
+  <button class="btn btn-outline-light ms-2" (click)="toggleSidebar()">
+    ☰
+  </button>
+
+  <div class="mx-auto w-50">
+    <div class="input-group">
+      <span class="input-group-text bg-white border-end-0">
+        <i class="bi bi-search"></i>
+      </span>
+      <input
+        type="text"
+        class="form-control border-start-0"
+        placeholder="Search..."
+      />
+    </div>
+  </div>
+
+  <div class="d-flex align-items-center gap-2 ms-auto">
+    <img
+      [src]="user.image || 'https://tse1.mm.bing.net/th/id/OIP.rcmXeqCUOiCg54dfU4v9tgHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3'"
+      class="rounded-circle"
+      alt="User"
+      height="40"
+      width="40"
+    />
+
+    <div class="bg-transparent text-white d-flex justify-content-center align-items-center"
+         style="width: 40px; height: 40px; font-weight: bold;">
+      {{ userInitials }}
+    </div>
+  </div>
+</nav>

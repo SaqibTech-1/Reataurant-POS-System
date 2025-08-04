@@ -23,14 +23,5 @@ namespace RestaurantPOS.API.Controllers
             var result = await _auth.LoginAsync(dto);
             return Ok(new ApiResponse<AuthResponseDto>(result));
         }
-
-
-        [HttpPost("Register")]
-        public async Task<IActionResult> Register(CreateUserDto dto)
-        {
-            var result = await _auth.RegisterAsync(dto);
-            return Ok(new ApiResponse<UserDto>(result));
-        }
-
     }
 }

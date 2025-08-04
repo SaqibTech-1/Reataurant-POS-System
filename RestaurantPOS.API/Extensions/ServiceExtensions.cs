@@ -46,6 +46,7 @@ namespace RestaurantPOS.API.Extensions
             services.AddScoped<ITableService, TableService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserContextService, UserContextService>();
+            services.AddSingleton<IWebHostEnvironment>(sp => sp.GetRequiredService<IWebHostEnvironment>());
             services.AddHttpContextAccessor();
         }
 

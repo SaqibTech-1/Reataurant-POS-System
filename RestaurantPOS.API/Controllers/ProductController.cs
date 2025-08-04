@@ -29,7 +29,12 @@ namespace RestaurantPOS.API.Controllers
         public async Task<IActionResult> GetByGuid(Guid guid) => Ok(new ApiResponse<ProductDto>(await _service.GetByGlobalIdAsync(guid)));
 
         [HttpPost]
-        public async Task<IActionResult> CreateOrUpdate(CreateProductDto dto) => Ok(new ApiResponse<ProductDto>(await _service.CreateOrUpdateAsync(dto)));
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> CreateOrUpdate([FromForm] CreateProductDto dto)
+        {
+            var result = await _service.CreateOrUpdateAsync(dto);
+            return Ok(new ApiResponse<ProductDto>(result));
+        }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)

@@ -1,0 +1,48 @@
+
+
+<div class="bg-light-subtle border-end p-3" [ngClass]="{ 'd-none': isCollapsed }" style="height:92vh;">
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a class="nav-link" routerLink="/dashboard">Dashboard</a>
+        </li>
+
+        <!-- User Management -->
+        <li class="nav-item">
+            <a href="javascript:void(0)" class="nav-link d-flex justify-content-between align-items-center"
+                (click)="toggleMenu('users')">
+                User Management
+                 <i class="bi" [ngClass]="menuStates['users'] ? 'bi-chevron-down' : 'bi-chevron-right'"></i>
+            </a>
+            <ul class="nav flex-column ms-3" *ngIf="menuStates['users']">
+                <li class="nav-item"><a class="nav-link" routerLink="/users/create">Create</a></li>
+                <li class="nav-item"><a class="nav-link" routerLink="/users/list">List</a></li>
+            </ul>
+        </li>
+
+        <!-- Products -->
+        <li class="nav-item">
+            <a href="javascript:void(0)" dropdown-toggle class="nav-link d-flex justify-content-between align-items-center"
+                (click)="toggleMenu('products')">
+                Products
+                 <i class="bi" [ngClass]="menuStates['products'] ? 'bi-chevron-down' : 'bi-chevron-right'"></i>
+            </a>
+            <ul class="nav flex-column ms-3" *ngIf="menuStates['products']">
+                <li class="nav-item"><a class="nav-link" routerLink="/products/create">Create</a></li>
+                <li class="nav-item"><a class="nav-link" routerLink="/products/list">List</a></li>
+            </ul>
+        </li>
+
+        <!-- Categories -->
+        <li class="nav-item">
+            <a href="javascript:void(0)" class="nav-link d-flex justify-content-between align-items-center"
+                (click)="toggleMenu('categories')">
+                Categories
+                 <i class="bi" [ngClass]="menuStates['categories'] ? 'bi-chevron-down' : 'bi-chevron-right'"></i>
+            </a>
+            <ul class="nav flex-column ms-3" *ngIf="menuStates['categories']">
+                <li class="nav-item"><a class="nav-link" routerLink="/categories/create">Create</a></li>
+                <li class="nav-item"><a class="nav-link" routerLink="/categories/list">List</a></li>
+            </ul>
+        </li>
+    </ul>
+</div>

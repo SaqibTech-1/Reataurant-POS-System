@@ -1,0 +1,57 @@
+/* You can add global styles to this file, and also import other style files */
+.toast-top-center {
+  top: 30px !important;
+  right: 0;
+  left: 0;
+  margin: 0 auto;
+  z-index: 9999 !important;
+  position: fixed !important;
+}
+
+
+/* Modern Toast Style */
+.modern-toast {
+  background: #ffffff !important;
+  color: #333 !important;
+  border-radius: 10px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
+  padding: 1rem !important;
+  border: 1px solid #e0e0e0 !important;
+  font-family: 'Segoe UI', Roboto, sans-serif !important;
+  font-size: 0.95rem !important;
+  min-width: 300px !important;
+  max-width: 360px !important;
+}
+
+.modern-toast .toast-title {
+  font-weight: 600 !important;
+  font-size: 1rem !important;
+  margin-bottom: 4px;
+}
+
+.modern-toast .toast-message {
+  font-size: 0.9rem !important;
+  margin: 0;
+}
+
+.modern-toast.toast-success {
+  border-left: 5px solid #28a745 !important;
+}
+
+.modern-toast.toast-error {
+  border-left: 5px solid #dc3545 !important;
+}
+
+.modern-toast.toast-info {
+  border-left: 5px solid #17a2b8 !important;
+}
+
+.modern-toast.toast-warning {
+  border-left: 5px solid #ffc107 !important;
+}
+
+
+.rotate-90 {
+  transform: rotate(90deg);
+  transition: transform 0.2s ease;
+}

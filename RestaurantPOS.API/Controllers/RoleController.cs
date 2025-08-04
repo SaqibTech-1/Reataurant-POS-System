@@ -7,6 +7,7 @@ using RestaurantPOS.API.Services.Interfaces;
 
 namespace RestaurantPOS.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class RoleController : ControllerBase
